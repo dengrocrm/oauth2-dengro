@@ -7,17 +7,18 @@ This package provides DenGro OAuth 2.0 support for the PHP League's [OAuth 2.0 C
 To install, use composer:
 
 ```
-composer require dengro-lead-management/oauth2-dengro
+composer require dengrocrm/oauth2-dengro
 ```
 
 ## Usage
 
-Usage is the same as The League's OAuth client, using `\League\OAuth2\Client\Provider\Dengro` as the provider.
+Usage is the same as The League's OAuth client, using `\Dengro\OAuth2\Client\Provider\Dengro` as the provider.
 
 ### Authorization Code Flow
 
 ```php
-$provider = new League\OAuth2\Client\Provider\Dengro([
+$provider = new Dengro\OAuth2\Client\Provider\Dengro([
+    'domain'            => '{domain}',
     'clientId'          => '{dengro-client-id}',
     'clientSecret'      => '{dengro-client-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
@@ -89,16 +90,16 @@ $ ./vendor/bin/phpunit
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/dengro-lead-management/oauth2-dengro/blob/master/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/dengrocrm/oauth2-dengro/blob/master/CONTRIBUTING.md) for details.
 
 
 ## Credits
 
 - [Daniel Davidson](https://github.com/dan-rally)
 - [Steven Maguire](https://github.com/stevenmaguire)
-- [All Contributors](https://github.com/thephpleague/oauth2-github/contributors)
+- [All Contributors](https://github.com/thephpleague/oauth2-client/contributors)
 
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/thephpleague/oauth2-github/blob/master/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/dengrocrm/oauth2-dengro/blob/master/LICENSE) for more information.
