@@ -18,7 +18,6 @@ Usage is the same as The League's OAuth client, using `\Dengro\OAuth2\Client\Pro
 
 ```php
 $provider = new Dengro\OAuth2\Client\Provider\Dengro([
-    'domain'            => '{domain}',
     'clientId'          => '{dengro-client-id}',
     'clientSecret'      => '{dengro-client-secret}',
     'redirectUri'       => 'https://example.com/callback-url',

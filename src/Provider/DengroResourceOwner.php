@@ -10,13 +10,6 @@ class DengroResourceOwner implements ResourceOwnerInterface
     use ArrayAccessorTrait;
 
     /**
-     * Domain
-     *
-     * @var string
-     */
-    protected $domain;
-
-    /**
      * Raw response
      *
      * @var array
@@ -62,43 +55,7 @@ class DengroResourceOwner implements ResourceOwnerInterface
     {
         return $this->getValueByKey($this->response, 'name');
     }
-
-    /**
-     * Get resource owner nickname
-     *
-     * @return string|null
-     */
-    public function getNickname()
-    {
-        return $this->getValueByKey($this->response, 'login');
-    }
-
-    /**
-     * Get resource owner url
-     *
-     * @return string|null
-     */
-    public function getUrl()
-    {
-        $urlParts = array_filter([$this->domain, $this->getNickname()]);
-
-        return count($urlParts) ? implode('/', $urlParts) : null;
-    }
-
-    /**
-     * Set resource owner domain
-     *
-     * @param  string $domain
-     *
-     * @return ResourceOwner
-     */
-    public function setDomain($domain)
-    {
-        $this->domain = $domain;
-
-        return $this;
-    }
-
+    
     /**
      * Return all of the owner details available as an array.
      *

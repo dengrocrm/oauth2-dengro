@@ -2,7 +2,7 @@
 
 namespace Dengro\OAuth2\Client\Provider;
 
-use Dengro\OAuth2\Client\Provider\Exception\DengroIdentityProviderException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -11,60 +11,14 @@ use Psr\Http\Message\ResponseInterface;
 class Dengro extends AbstractProvider
 {
     use BearerAuthorizationTrait;
-    
+
     /**
-     * DenGro API endpoint to retrieve logged in user information.
+     * DenGro domain
      *
      * @var string
      */
-    const PATH_API_DETAILS = '/api/details';
-    
-    /**
-     * DenGro OAuth server authorization endpoint.
-     *
-     * @var string
-     */
-    const PATH_AUTHORIZE = '/oauth/auth/';
-    
-    /**
-     * DenGro OAuth server token request endpoint.
-     *
-     * @var string
-     */
-    const PATH_TOKEN = '/oauth/token/';
-    
-    /**
-     * Domain
-     *
-     * @var string
-     */
-    protected $domain;
-    
-    /**
-     * @param array $options
-     * @param array $collaborators
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function __construct($options = [], array $collaborators = [])
-    {
-        parent::__construct($options, $collaborators);
-        if (empty($options['domain'])) {
-            $message = 'The "domain" option not set. Please set a domain.';
-            throw new \InvalidArgumentException($message);
-        }
-    }
-    
-    /**
-     * Get domain.
-     *
-     * @return string
-     */
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-    
+    const DOMAIN = 'https://id.dengro.com';
+
     /**
      * Get authorization url to begin OAuth flow
      *
@@ -72,19 +26,17 @@ class Dengro extends AbstractProvider
      */
     public function getBaseAuthorizationUrl()
     {
-        return $this->domain.self::PATH_AUTHORIZE;
+        return self::DOMAIN.'/oauth/authorize';
     }
 
     /**
      * Get access token url to retrieve token
      *
-     * @param  array $params
-     *
      * @return string
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return $this->domain.self::PATH_TOKEN;
+        return self::DOMAIN.'/oauth/token';
     }
 
     /**
@@ -96,7 +48,7 @@ class Dengro extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return $this->domain.self::PATH_API_DETAILS;
+        return self::DOMAIN.'/api/details';
     }
 
     /**
@@ -115,33 +67,57 @@ class Dengro extends AbstractProvider
     /**
      * Check a provider response for errors.
      *
-     * @link   https://developer.github.com/v3/#client-errors
-     * @link   https://developer.github.com/v3/oauth/#common-errors-for-the-access-token-request
      * @throws IdentityProviderException
      * @param  ResponseInterface $response
-     * @param  array $data Parsed response data
+     * @param  string $data Parsed response data
      * @return void
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if ($response->getStatusCode() >= 400) {
-            throw DengroIdentityProviderException::clientException($response, $data);
-        } elseif (isset($data['error'])) {
-            throw DengroIdentityProviderException::oauthException($response, $data);
+        if (isset($data['error'])) {
+            throw new IdentityProviderException(
+                $data['error'] ?: $response->getReasonPhrase(),
+                $response->getStatusCode(),
+                $response
+            );
         }
     }
 
     /**
      * Generate a user object from a successful user details request.
      *
-     * @param array $response
+     * @param object $response
      * @param AccessToken $token
-     * @return \League\OAuth2\Client\Provider\ResourceOwnerInterface
+     * @return DengroResourceOwner
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        $user = new DengroResourceOwner($response);
+        return new DengroResourceOwner($response);
+    }
 
-        return $user->setDomain($this->domain);
+    /**
+     * Requests resource owner details.
+     *
+     * @param  AccessToken $token
+     * @return mixed
+     */
+    protected function fetchResourceOwnerDetails(AccessToken $token)
+    {
+        $url = $this->getResourceOwnerDetailsUrl($token);
+        $request = $this->getAuthenticatedRequest(self::METHOD_POST, $url, $token);
+        return $this->getParsedResponse($request);
+    }
+
+    /**
+     * Builds the authorization URL.
+     *
+     * @param  array $options
+     * @return string Authorization URL
+     */
+    public function getAuthorizationUrl(array $options = [])
+    {
+        return parent::getAuthorizationUrl(array_merge([
+            'approval_prompt' => []
+        ], $options));
     }
 }
