@@ -11,14 +11,27 @@ use Psr\Http\Message\ResponseInterface;
 class Dengro extends AbstractProvider
 {
     use BearerAuthorizationTrait;
-
+    
     /**
-     * DenGro domain
-     *
+     * DenGro Base URL
      * @var string
      */
-    const DOMAIN = 'https://id.dengro.com';
-
+    protected $baseUrl = 'https://id.dengro.com';
+    
+    /**
+     * Mastodon constructor.
+     * @param array $options
+     * @param array $collaborators
+     */
+    public function __construct(array $options = [], array $collaborators = [])
+    {
+        parent::__construct($options, $collaborators);
+        
+        if (isset($options['baseUrl'])) {
+            $this->baseUrl = $options['baseUrl'];
+        }
+    }
+    
     /**
      * Get authorization url to begin OAuth flow
      *
@@ -26,9 +39,9 @@ class Dengro extends AbstractProvider
      */
     public function getBaseAuthorizationUrl()
     {
-        return self::DOMAIN.'/oauth/authorize';
+        return $this->baseUrl.'/oauth/authorize';
     }
-
+    
     /**
      * Get access token url to retrieve token
      *
@@ -36,9 +49,9 @@ class Dengro extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return self::DOMAIN.'/oauth/token';
+        return $this->baseUrl.'/oauth/token';
     }
-
+    
     /**
      * Get provider url to fetch user details
      *
@@ -48,9 +61,9 @@ class Dengro extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return self::DOMAIN.'/api/details';
+        return $this->baseUrl.'/api/details';
     }
-
+    
     /**
      * Get the default scopes used by this provider.
      *
@@ -63,7 +76,7 @@ class Dengro extends AbstractProvider
     {
         return ["user-read"];
     }
-
+    
     /**
      * Check a provider response for errors.
      *
@@ -82,7 +95,7 @@ class Dengro extends AbstractProvider
             );
         }
     }
-
+    
     /**
      * Generate a user object from a successful user details request.
      *
@@ -94,7 +107,7 @@ class Dengro extends AbstractProvider
     {
         return new DengroResourceOwner($response);
     }
-
+    
     /**
      * Requests resource owner details.
      *
@@ -107,7 +120,7 @@ class Dengro extends AbstractProvider
         $request = $this->getAuthenticatedRequest(self::METHOD_POST, $url, $token);
         return $this->getParsedResponse($request);
     }
-
+    
     /**
      * Builds the authorization URL.
      *
