@@ -8,14 +8,14 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 class DengroResourceOwner implements ResourceOwnerInterface
 {
     use ArrayAccessorTrait;
-
+    
     /**
      * Raw response
      *
      * @var array
      */
     protected $response;
-
+    
     /**
      * Creates new resource owner.
      *
@@ -25,7 +25,7 @@ class DengroResourceOwner implements ResourceOwnerInterface
     {
         $this->response = $response;
     }
-
+    
     /**
      * Get resource owner id
      *
@@ -33,9 +33,9 @@ class DengroResourceOwner implements ResourceOwnerInterface
      */
     public function getId()
     {
-        return $this->getValueByKey($this->response, 'id');
+        return $this->getValueByKey($this->response, 'uuid');
     }
-
+    
     /**
      * Get resource owner email
      *
@@ -45,7 +45,7 @@ class DengroResourceOwner implements ResourceOwnerInterface
     {
         return $this->getValueByKey($this->response, 'email');
     }
-
+    
     /**
      * Get resource owner name
      *
@@ -53,7 +53,7 @@ class DengroResourceOwner implements ResourceOwnerInterface
      */
     public function getName()
     {
-        return $this->getValueByKey($this->response, 'name');
+        return $this->getValueByKey($this->response, 'full_name');
     }
     
     /**
