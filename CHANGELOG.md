@@ -1,6 +1,23 @@
 # Changelog
 All Notable changes to `oauth2-dengro` will be documented in this file
 
+## 1.0.4 - 2019-07-09
+
+### Added
+- Nothing 
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Fixing base URL endpoint
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.0.3 - 2019-02-13
 
 ### Added

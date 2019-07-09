@@ -16,7 +16,7 @@ class Dengro extends AbstractProvider
      * DenGro Base URL
      * @var string
      */
-    protected $baseUrl = 'https://id.dengro.com';
+    protected $baseUrl = 'https://sso.dengro.com';
     
     /**
      * Mastodon constructor.
