@@ -1,7 +1,7 @@
 {
     "name": "dengrocrm/oauth2-dengro",
     "description": "DenGro OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "license": "MIT",
     "authors": [
         {
