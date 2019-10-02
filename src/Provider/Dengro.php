@@ -39,17 +39,19 @@ class Dengro extends AbstractProvider
      */
     public function getBaseAuthorizationUrl()
     {
-        return $this->baseUrl.'/oauth/authorize';
+        return $this->baseUrl . '/oauth/authorize';
     }
     
     /**
      * Get access token url to retrieve token
      *
+     * @param  array $params
+     *
      * @return string
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return $this->baseUrl.'/oauth/token';
+        return $this->baseUrl . '/oauth/token';
     }
     
     /**
@@ -74,20 +76,22 @@ class Dengro extends AbstractProvider
      */
     protected function getDefaultScopes()
     {
-        return ["user-read"];
+        return ['user-read'];
     }
     
     /**
      * Check a provider response for errors.
      *
      * @throws IdentityProviderException
+     *
      * @param  ResponseInterface $response
-     * @param  string $data Parsed response data
+     * @param  array|string $data Parsed response data
+     *
      * @return void
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if (isset($data['error'])) {
+        if (is_array($data) && isset($data['error'])) {
             throw new IdentityProviderException(
                 $data['error'] ?: $response->getReasonPhrase(),
                 $response->getStatusCode(),
@@ -99,25 +103,30 @@ class Dengro extends AbstractProvider
     /**
      * Generate a user object from a successful user details request.
      *
-     * @param object $response
-     * @param AccessToken $token
+     * @param  array $response
+     * @param  AccessToken $token
+     *
      * @return DengroResourceOwner
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new DengroResourceOwner($response);
     }
-    
+
     /**
      * Requests resource owner details.
      *
      * @param  AccessToken $token
+     *
      * @return mixed
+     *
+     * @throws IdentityProviderException
      */
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         $url = $this->getResourceOwnerDetailsUrl($token);
         $request = $this->getAuthenticatedRequest(self::METHOD_POST, $url, $token);
+
         return $this->getParsedResponse($request);
     }
     
@@ -125,6 +134,7 @@ class Dengro extends AbstractProvider
      * Builds the authorization URL.
      *
      * @param  array $options
+     *
      * @return string Authorization URL
      */
     public function getAuthorizationUrl(array $options = [])
